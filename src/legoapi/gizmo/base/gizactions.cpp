@@ -72,7 +72,7 @@ static void GizAction_TurnOnFlowBox(GIZFLOW_s *flow, FLOWBOX_s *, char **params,
 }
 
 static void GizActions_ActivateBelt(GIZFLOW_s *, FLOWBOX_s *, char **params, int count) {
-    i32 active = 1;
+    i8 active = 1;
     for (i32 index = 0; index < count; ++index) {
         if (NuStrICmp(params[index], "FALSE") == 0) {
             active = 0;
@@ -80,7 +80,7 @@ static void GizActions_ActivateBelt(GIZFLOW_s *, FLOWBOX_s *, char **params, int
             active = 1;
         }
     }
-    WorldInfo_CurrentlyActive()->field_0x5174 = static_cast<i8>(active);
+    WorldInfo_CurrentlyActive()->field_0x5174 = active;
 }
 
 static void GizActions_ChangeObstTriggerType(GIZFLOW_s *flow, FLOWBOX_s *, char **params, int count) {
