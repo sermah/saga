@@ -350,13 +350,13 @@ void TatooineA_Update(WORLDINFO_s *world) {
         if (node == NULL)
             return;
         GIZFORCE_s *selected = group->forces[2];
-        if (selected == first) {
+        if (first == selected) {
             node->position.x = -16.44f;
             node->position.z = -0.16f;
-        } else if (selected == second) {
+        } else if (second == selected) {
             node->position.x = -16.58f;
             node->position.z = -0.21f;
-        } else if (selected == third) {
+        } else if (third == selected) {
             node->position.x = -16.71f;
             node->position.z = -0.25f;
         }
@@ -881,11 +881,12 @@ void DeathStarEscapeB_Init(WORLDINFO_s *world) {
 
 void DeathStarEscapeB_Draw(WORLDINFO_s *) {
     if (LevGameObject[0] != NULL && *static_cast<u8 *>(deathstarescapeb_netpacket) == 0) {
-        NUMTX matrix = LevGameObject[0]->joint_matrices[1];
+        // The original realigns the stack for this local (16-byte aligned matrix).
+        NUMTX matrix __attribute__((aligned(16))) = LevGameObject[0]->joint_matrices[1];
         NuSpecialDrawAt(&LevHSpecial[2], &matrix);
     }
     if (LevGameObject[1] != NULL && *static_cast<u8 *>(deathstarescapeb_netpacket) == 0) {
-        NUMTX matrix = LevGameObject[1]->joint_matrices[1];
+        NUMTX matrix __attribute__((aligned(16))) = LevGameObject[1]->joint_matrices[1];
         NuSpecialDrawAt(&LevHSpecial[2], &matrix);
     }
 }

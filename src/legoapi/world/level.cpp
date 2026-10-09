@@ -133,6 +133,7 @@ extern void Door_Reset(void);
 extern void BackDrop_ResetColours(void);
 extern i16 id_DEFAULTCHARACTER[2];
 extern i32 GetMenuID(void);
+extern f32 extrasavealpha;
 
 static NUVEC titlesstartpos;
 
@@ -225,6 +226,7 @@ static void Titles_Init(WORLDINFO *world) {
 }
 
 static void Titles_Update(WORLDINFO *) {
+    extrasavealpha = 1.0f;
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
         i32 menu_id = GetMenuID();
         f32 target =
@@ -235,11 +237,12 @@ static void Titles_Update(WORLDINFO *) {
     }
 
     TitlesAlpha = SeekLinearF(TitlesAlpha, 1.0f, FRAMETIME + FRAMETIME);
-    LevTime[1] = 0.0f;
-    if (GetMenuID() == 0 && !(GameTimer.time_elapsed < 4.0f)) {
-        LevTime[1] = 1.0f;
+    f32 target = 0.0f;
+    if (GetMenuID() == 0) {
+        target = (GameTimer.time_elapsed >= 4.0f) ? 1.0f : 0.0f;
     }
-    LevTime[0] = SeekLinearF(LevTime[0], LevTime[1], FRAMETIME + FRAMETIME);
+    LevTime[1] = target;
+    LevTime[0] = SeekLinearF(LevTime[0], target, FRAMETIME + FRAMETIME);
 }
 
 static void Titles_Draw(WORLDINFO *) {

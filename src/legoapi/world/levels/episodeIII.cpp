@@ -62,7 +62,7 @@ struct VADERA_s {
     GIZAIMESSAGE_s *ceiling_collapse_message;
     GIZAIMESSAGE_s *timer_message;
     f32 timer;
-    u16 count;
+    i16 count;
     i16 subtitle;
     GIZFORCE_s *forces[4];
     AILOCATOR_s *big_jump_locator;
@@ -360,10 +360,10 @@ void GrievousA_Update(WORLDINFO_s *world) {
     if (Grievous_obj->current_hp > 0)
         return;
 
-    if (FreePlay == 0)
-        KillBossPlayCutScene((i32)(i16)id_GRIEVOUS, 0, 0.0f, "ep3_GeneralGrievous_Outro");
-    else
+    if (FreePlay != 0)
         KillBossCompleteLevel((i32)(i16)id_GRIEVOUS, 0, 0.0f);
+    else
+        KillBossPlayCutScene((i32)(i16)id_GRIEVOUS, 0, 0.0f, "ep3_GeneralGrievous_Outro");
 }
 
 // ===========================================================================
@@ -841,7 +841,7 @@ void VaderC_Update(WORLDINFO_s *world) {
 }
 
 void VaderA_DrawPanel(WORLDINFO_s *) {
-    if (vader_a.count <= 2) {
+    if (__builtin_expect(vader_a.count <= 2, 0)) {
         if (vader_a.count != 0) {
             DrawTimer((i32)vader_a.timer + 1, vader_a.subtitle, 0);
             vader_a.subtitle = 0;
@@ -873,7 +873,7 @@ void VaderA_GoneThroughDoor(WORLDINFO_s *world, DOOR_s *door) {
         door->active = 1;
 }
 
-static __used__ void VaderA_StartCollapseStage(WORLDINFO_s *world) {
+static void VaderA_StartCollapseStage(WORLDINFO_s *world) {
     i32 path_index;
     nuhspecial_s specials[100];
     u32 *path_connection = static_cast<u32 *>(
@@ -883,16 +883,14 @@ static __used__ void VaderA_StartCollapseStage(WORLDINFO_s *world) {
         path_connection[path_index] |= 0x80000000;
     }
 
-    vader_a.forces[0] = GizForces_FindForce(world, "force4");
-    vader_a.forces[1] = GizForces_FindForce(world, "InControlRoom");
-    vader_a.forces[2] = GizForces_FindForce(world, "ceiling_collapse");
-    vader_a.forces[3] = GizForces_FindForce(world, "wobble");
+    vader_a.forces[0] = GizForces_FindForce(world, "force1");
+    vader_a.forces[1] = GizForces_FindForce(world, "force2");
+    vader_a.forces[2] = GizForces_FindForce(world, "force3");
+    vader_a.forces[3] = GizForces_FindForce(world, "force4");
     vader_a.count = 1;
     vader_a.timer = 30.0f;
-    vader_a.in_control_room_message =
-        SetGizAIMessage(gizaimessagesys, "InControlRoom", 1.0f, vader_a.in_control_room_message);
-    vader_a.ceiling_collapse_message =
-        SetGizAIMessage(gizaimessagesys, "ceiling_collapse", 1.0f, vader_a.ceiling_collapse_message);
+    SetGizAIMessage(gizaimessagesys, "InControlRoom", 1.0f, vader_a.in_control_room_message);
+    SetGizAIMessage(gizaimessagesys, "ceiling_collapse", 1.0f, vader_a.ceiling_collapse_message);
 
     i32 special_count = NuSpecialFindMulti(world->current_gscn, specials, "wobble", 100, 0);
     for (i32 i = 0; i < special_count; ++i) {

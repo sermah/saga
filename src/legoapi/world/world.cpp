@@ -1067,12 +1067,11 @@ void WorldInfo_ReArrangeBuffers(i32 area1, i32 area2) {
     } else if ((ADataList[area1].flags & AREAFLAG_SINGLE_BUFFER) != 0) {
         LWORLD = &WorldInfo[0];
         WORLD = &WorldInfo[0];
-        if (WorldInfo[0].unknown_0108.addr >= bufferEnd->addr) {
-            return;
+        if (WorldInfo[0].unknown_0108.addr < bufferEnd->addr) {
+            usize end = bufferEnd->addr;
+            bufferEnd->addr = WorldInfo[0].unknown_0108.addr;
+            WorldInfo[0].unknown_0108.addr = end - EDITBUFFERENDSIZE;
         }
-        usize end = bufferEnd->addr;
-        bufferEnd->addr = WorldInfo[0].unknown_0108.addr;
-        WorldInfo[0].unknown_0108.addr = end - EDITBUFFERENDSIZE;
         return;
     }
 
