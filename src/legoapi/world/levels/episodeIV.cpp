@@ -809,12 +809,10 @@ i32 DeathStarShieldDown() {
     if (blowup->output_flags & 1)
         return 1;
     if (__builtin_expect(static_cast<i8>(blowup->state_flags) < 0, 1)) {
-        GameObject_s **players = Player;
-        GameObject_s *player = players[0];
-        if (player != NULL) {
+        if (Player[0] != NULL) {
             if (WORLD->current_level != DEATHSTARBATTLED_LDATA ||
-                !ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx)) {
-                TORPEDOPACKET_s *packet = player->torpedo;
+                !ObjInNarrowSock(Player[0], WORLD->sock_sys, WORLD->level_idx)) {
+                TORPEDOPACKET_s *packet = Player[0]->torpedo;
                 if (packet != NULL) {
                     if (packet->count != 0 || (packet->field_0x1 & 2) != 0)
                         return 1;
@@ -822,11 +820,10 @@ i32 DeathStarShieldDown() {
             }
         }
 
-        player = players[1];
-        if (player != NULL) {
+        if (Player[1] != NULL) {
             if (WORLD->current_level != DEATHSTARBATTLED_LDATA ||
-                !ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx)) {
-                TORPEDOPACKET_s *packet = player->torpedo;
+                !ObjInNarrowSock(Player[1], WORLD->sock_sys, WORLD->level_idx)) {
+                TORPEDOPACKET_s *packet = Player[1]->torpedo;
                 if (packet != NULL) {
                     if (packet->count != 0)
                         return 1;

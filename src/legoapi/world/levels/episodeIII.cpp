@@ -479,29 +479,30 @@ void KashyyykD_Update(WORLDINFO_s *) {
     if (netclient != 0)
         return;
     if (BoulderWait <= 0.0f) {
-        if (boulder_part[i_boulder] != NULL)
+        i32 index = i_boulder;
+        if (boulder_part[index] != NULL)
             return;
-        if (LevInstAnim[i_boulder] != NULL && LevHSpecial[i_boulder].display_special != NULL) {
+        if (LevInstAnim[index] != NULL && LevHSpecial[index].display_special != NULL) {
             ADDPART_s params = Default_ADDPART;
             params.matrix = &numtx_identity;
             params.velocity = &v000;
-            params.owner = NULL;
-            params.field_14 = 0.3f;
-            params.field_18 = 0.3f;
-            params.gravity = 0.0f;
-            params.special = &LevHSpecial[i_boulder];
+            params.special = &LevHSpecial[index];
             params.flags = 0x80861a;
+            params.field_18 = 0.3f;
+            params.field_14 = 0.3f;
+            params.gravity = 0.0f;
+            params.owner = NULL;
             params.move_fn = Boulder_Move;
             params.field_40 = PartCollide_3D;
             params.field_44 = Boulder_Kill;
             params.time_step = FRAMETIME;
             PART_s *part = AddPart(&params);
             if (part != NULL)
-                boulder_part[i_boulder] = part;
-            LevInstAnim[i_boulder]->ltime = 1.0f;
-            LevInstAnim[i_boulder]->playing = 1;
-            LevInstAnim[i_boulder]->mtx = numtx_identity;
-            NuSpecialSetVisibility(&LevHSpecial[i_boulder], 1);
+                boulder_part[index] = part;
+            LevInstAnim[index]->ltime = 1.0f;
+            LevInstAnim[index]->playing = 1;
+            LevInstAnim[index]->mtx = numtx_identity;
+            NuSpecialSetVisibility(&LevHSpecial[index], 1);
         }
         ++i_boulder;
         if (i_boulder == 2)
