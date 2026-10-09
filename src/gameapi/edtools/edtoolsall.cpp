@@ -6052,8 +6052,8 @@ void EdClassInterface::Import() {
 }
 
 void SplineHelper::Flush() {
-    first_object = NULL;
     last_object = NULL;
+    first_object = NULL;
     object_count = 0;
 }
 
@@ -6813,6 +6813,10 @@ inline void EdControl::operator delete(void *memory) {
 // Match each control's allocation type, rather than inheriting the base size.
 inline void EdEnumControl::operator delete(void *memory) {
     theMemoryManager.FreePool(memory, sizeof(EdEnumControl));
+}
+
+inline void EdSpecialObjectControl::operator delete(void *memory) {
+    theMemoryManager.FreePool(memory, sizeof(EdSpecialObjectControl));
 }
 
 inline void EdBitControl::operator delete(void *memory) {

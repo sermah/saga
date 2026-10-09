@@ -237,7 +237,7 @@ extern "C" void NuPostEffectDestroy() {
     }
     NuPostFilterGen::destroySharedTextureResources();
     NuPostFilterGen::destroySharedResources();
-    filterAllocator.cursor = filterMem;
+    filterAllocator.cursor = filterAllocator.base;
 }
 
 extern "C" void NuPostEffectRender(nuframebuffer_s *output) {
@@ -374,16 +374,16 @@ extern "C" void NuPostEffectMotionBlur(const NUMTX *previous, const NUMTX *curre
     motionFilter->falloff = falloff;
 }
 
-extern "C" void NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, i32 mode) {
+extern "C" void NuPostEffectAccumulationMotionBlur(i32 frames, f32 blend, f32 mode) {
     if (mainFilter == NULL)
         return;
-    mainFilter->accumulation_frames = frames;
     mainFilter->accumulation_blend = blend;
+    mainFilter->accumulation_frames = frames;
     mainFilter->accumulation_mode = mode;
     if (motionAccumFilter != NULL) {
+        motionAccumFilter->mode = mode;
         motionAccumFilter->frames = frames;
         motionAccumFilter->blend = blend;
-        motionAccumFilter->mode = mode;
     }
 }
 
@@ -423,7 +423,7 @@ extern "C" void NuPostEffectEnable(i32 mask) {
     }
 }
 
-extern "C" void NuPostEffectDisable(u32 mask) {
+extern "C" void NuPostEffectDisable(i32 mask) {
     switch (mask) {
         case 4:
             if (mainFilter->bloom_enabled) {
@@ -451,7 +451,7 @@ extern "C" void NuPostEffectDisable(u32 mask) {
     }
 }
 
-extern "C" bool NuPostEffectIsEnabled(u32 mask) {
+extern "C" i32 NuPostEffectIsEnabled(i32 mask) {
     if ((g_effectFlags & mask) == 0)
         return false;
     switch (mask) {

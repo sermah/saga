@@ -67,7 +67,9 @@ void NuMainFilterGen::destroyTextureResources() {
 void NuMainFilterGen::initResources() {
     NuPostFilterGen::initResources();
     blur_fbo = NuFramebufferCreate();
-    dof_enabled = bloom_enabled = motion_blur_enabled = false;
+    dof_enabled = false;
+    bloom_enabled = false;
+    motion_blur_enabled = false;
     active_filter_count = 0;
 }
 
@@ -543,7 +545,7 @@ i32 NuDataPortManager::registerPort(char const *name, void *data) {
 }
 
 NuMotionFilterGen::NuMotionFilterGen() {
-    scale = maximum = 0.0f;
+    maximum = scale = 0.0f;
     falloff = 1.0f;
 }
 
@@ -608,14 +610,14 @@ void NuDeferredFilterGen::initResources() {
         shadow_fbos[i] = NuFramebufferCreate();
     light_fbo = NuFramebufferCreate();
     NuFramebufferAttachTex2D(light_fbo, 0, textures[0], 0);
-    dynamic_light_count = deferred_geometry_count = 0;
+    deferred_geometry_count = dynamic_light_count = 0;
     resetAll();
 }
 
 void NuDeferredFilterGen::initTextureResources(i32 width, i32 height) {
     textures[2] = NuEffectTexCreate2D(768, 1344, 1, 1, 4);
     textures[3] = NuEffectTexCreate2D(640, 2048, 1, 1, 4);
-    textures[4] = textures[5] = NULL;
+    textures[5] = textures[4] = NULL;
     textures[0] = NuEffectTexCreate2D(width / 2, height, sample_count, 1, 2);
     textures[1] = NuEffectTexCreate2D(1, 1, 1, 0, 2);
 }
@@ -709,7 +711,7 @@ f32 NuMotionAccumFilterGen::GetTiming(i32 *last_frame) {
 
 NuMotionAccumFilterGen::NuMotionAccumFilterGen() {
     blend = 1.0f;
-    frames = mode = 0;
+    mode = frames = 0;
 }
 
 void NuMotionAccumFilterGen::destroyResources() {

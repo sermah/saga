@@ -664,6 +664,7 @@ struct EdRegistry {
 struct EdSpecialObjectControl : EdControl {
     eduimenu_s *menu;
     EdSpecialObjectControl();
+    static void operator delete(void *);
     void AddMenuItem(eduimenu_s *, EdRef *, void *) override;
     void Process(EdInputContext &) override;
     void Render() override;
