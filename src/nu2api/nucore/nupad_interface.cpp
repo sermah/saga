@@ -296,11 +296,11 @@ NuTouchInputElement::NuTouchInputElement(NuTouchInputElement::TYPE type, i32 id,
 
 NuTouchInputElement::NuTouchInputElement(NuTouchInputElement::TYPE type, i32 id, u32 index, float x, float y,
                                          float width, float height) {
-    this->id = id;
-    this->index = index;
-    this->type = type;
     this->x = x;
     this->y = y;
     this->width = width;
     this->height = height;
+    this->id = id;
+    this->index = index;
+    this->type = type;
 }

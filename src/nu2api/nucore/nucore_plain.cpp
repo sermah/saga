@@ -1449,8 +1449,6 @@ extern "C" {
         nuanimbuff_s *global = static_cast<nuanimbuff_s *>(globalbuffer);
         buffer->joint_count = 0;
         buffer->max_joints = global->max_joints;
-        buffer->use_quaternions = 0;
-        buffer->pad_07 = 0;
         buffer->joints = static_cast<nuanimbuffjoint_s *>(NuScratchAlloc32((buffer->max_joints * 3 + 3) * 0x10));
         buffer->joints = reinterpret_cast<nuanimbuffjoint_s *>(ALIGN(reinterpret_cast<usize>(buffer->joints), 0x10));
         buffer->joint_flags = static_cast<u8 *>(NuScratchAlloc32(buffer->max_joints));
@@ -3438,7 +3436,10 @@ extern "C" {
     void NuHGobjEvalAnim2Root_3(nuhgobj_s *object, ani3_animheader_s *animation, f32 time, i32 override_count,
                                 NUJOINTANIM_s *overrides, NUMTX *matrices, NUHGOBJROOTFN root_fn, void *root_data) {
         nuanimbuff_s buffer;
-        NUVEC root_translation = {0.0f, 0.0f, 0.0f};
+        NUVEC root_translation;
+        root_translation.z = 0.0f;
+        root_translation.y = 0.0f;
+        root_translation.x = 0.0f;
         NuAnimBuffCreateScratch(&buffer);
         NuAnimBuffAccumulate_3(&buffer, animation, time, 1, 0.0f, 0, object, NULL);
         if (override_count != 0 && JointProcAnimFn != NULL) {
@@ -3517,7 +3518,7 @@ extern "C" {
     void NuHGobjEvalAnimBlend2Root(nuhgobj_s *object, ani3_animheader_s *animation_a, f32 time_a,
                                    ani3_animheader_s *animation_b, f32 time_b, f32 blend, i32 override_count,
                                    NUJOINTANIM_s *overrides, NUMTX *matrices, NUHGOBJROOTFN root_fn, void *root_data) {
-        if (animation_a == NULL || (animation_a->magic != 0x414e4934 && animation_a->magic != 0x414e4935)) {
+        if (animation_a->magic != 0x414e4934 && animation_a->magic != 0x414e4935) {
             return;
         }
         NuHGobjEvalAnimBlend2Root_3(reinterpret_cast<nugscn_s *>(object), animation_a, time_a, animation_b, time_b,
