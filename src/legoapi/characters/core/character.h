@@ -227,10 +227,55 @@ struct GAMECHARACTERDATA_s {
     union {
         u32 field_0x94;
         u8 flags_094[4];
+        struct {
+            u8 minikit_with_scene : 1;
+            u8 dont_turn : 1;
+            u8 no_jump : 1;
+            u8 no_shoot : 1;
+            u8 fixed_layers : 1;
+            u8 lift_hover : 1;
+            u8 glide_anytime : 1;
+            u8 can_communicate : 1;
+            u8 immune_to_magnets : 1;
+            u8 immune_to_forcepush : 1;
+            u8 minikit_noscenewhenplayable : 1;
+            u8 cannot_kill : 1;
+            u8 wait_for_weapon_in_out : 1;
+            u8 double_jump_hover : 1;
+            u8 no_category : 1;
+            u8 no_force : 1;
+            u8 white_lightning : 1;
+            u8 buck_rider : 1;
+            u8 die_usecurrentlayers : 1;
+            u8 bit_094_2_3 : 1;
+            u8 bit_094_2_4 : 1;
+            u8 no_weapon_draw : 1;
+            u8 no_jump_fire : 1;
+            u8 hover_over_mud : 1;
+            u8 toggle_if_not_in_collection : 1;
+            u8 toggle_if_in_minikit_bonus : 1;
+            u8 deflect_bolts_in_minikit_bonus : 1;
+            u8 has_grapple : 1;
+            u8 hover_wings : 1;
+            u8 has_whip : 1;
+            u8 atatheadmovement : 1;
+            u8 can_poo : 1;
+        };
     };
     union {
         u32 field_0x98;
         u8 flags_098[4];
+        struct {
+            u8 can_zap : 1;
+            u8 put_weapon_away_on_shoot : 1;
+            u8 always_stop_to_shoot : 1;
+            u8 second_shot_only : 1;
+            u8 no_start_punch_sfx : 1;
+            u8 single_jump_slam : 1;
+            u8 dont_draw_rider : 1;
+            u8 blob_shadows_only : 1;
+            u8 bits_098_1_to_3[3];
+        };
     };
     u32 layer_mask_special; // 0x9c
     u32 layer_mask;         // 0xa0, high-detail hierarchy render-part visibility mask

@@ -1102,8 +1102,11 @@ void MenuDrawInsertCard(MENU_s *) {
 
 void MenuDrawLoadCancel(MENU_s *menu) {
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
-    MenuText3DEx(apitxt_DOYOUWANTTOABORTLOAD, 0.0f, -0.3f, 1.0f, MENUTEXTSCALE, MENUTEXTSCALE, MENUTEXTSCALE, 0,
-                 MENUNORMALR, MENUNORMALG, MENUNORMALB, MenuA);
+    header_r = MENUHEADERR;
+    header_g = MENUHEADERG;
+    header_b = MENUHEADERB;
+    MenuSmartTextEx(apitxt_DOYOUWANTTOABORTLOAD, 0.0f, -0.3f, 1.0f, MENUTEXTSCALE, MENUTEXTSCALE, MENUTEXTSCALE, 0,
+                    MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntry(menu, apitxt_YES);
     DrawMenuEntry(menu, apitxt_NO);
@@ -1111,8 +1114,11 @@ void MenuDrawLoadCancel(MENU_s *menu) {
 
 void MenuDrawSaveCancel(MENU_s *menu) {
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
-    MenuText3DEx(apitxt_DOYOUWANTTOABORT, 0.0f, -0.3f, 1.0f, MENUTEXTSCALE, MENUTEXTSCALE, MENUTEXTSCALE, 0,
-                 MENUNORMALR, MENUNORMALG, MENUNORMALB, MenuA);
+    header_r = MENUHEADERR;
+    header_g = MENUHEADERG;
+    header_b = MENUHEADERB;
+    MenuSmartTextEx(apitxt_DOYOUWANTTOABORT, 0.0f, -0.3f, 1.0f, MENUTEXTSCALE, MENUTEXTSCALE, MENUTEXTSCALE, 0,
+                    MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntry(menu, apitxt_YES);
     DrawMenuEntry(menu, apitxt_NO);
@@ -1275,8 +1281,11 @@ void MenuDrawFileCorrupt(MENU_s *) {
 
 void MenuDrawLoadConfirm(MENU_s *menu) {
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
+    header_r = MENUHEADERR;
+    header_g = MENUHEADERG;
+    header_b = MENUHEADERB;
     MenuText3DEx(apitxt_CONFIRMLOAD, 0.0f, -0.3f, 1.0f, MENUTEXTSCALE, MENUTEXTSCALE, MENUTEXTSCALE, 0, MENUNORMALR,
-                 MENUNORMALG, MENUNORMALB, MenuA);
+                 MENUNORMALG, MENUNORMALB, static_cast<u8>(MenuA));
     menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntry(menu, apitxt_YES);
     DrawMenuEntry(menu, apitxt_NO);
@@ -1545,9 +1554,9 @@ void MenuUpdateCardWarning(MENU_s *menu) {
 
 void MenuUpdateFileCorrupt(MENU_s *menu) {
     if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019)
-        MenuInfo[menu->menu].wrap = 1;
+        MenuInfo[menu->menu].cancel_prompt = 1;
     else
-        MenuInfo[menu->menu].wrap = 0;
+        MenuInfo[menu->menu].cancel_prompt = 0;
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
@@ -2273,11 +2282,10 @@ extern "C" {
         if (menu->menu == -1)
             return;
 
-        MENUFNINFO &info = MenuInfo[menu->menu];
-        if (info.memory_x != -1)
-            info.memory_x = menu->selected_column;
-        if (info.memory_y != -1)
-            info.memory_y = menu->selected_row;
+        if (MenuInfo[menu->menu].memory_x != -1)
+            MenuInfo[menu->menu].memory_x = menu->selected_column;
+        if (MenuInfo[menu->menu].memory_y != -1)
+            MenuInfo[menu->menu].memory_y = menu->selected_row;
     }
 
     void MenuRepeat(i32 *held, i32 *repeat, f32 *repeat_time, u8 *repeat_count, f32 interval, f32 elapsed) {
@@ -2289,12 +2297,11 @@ extern "C" {
 
         if (*repeat_time > 0.0f) {
             *repeat_time -= elapsed;
-            if (*repeat_time > 0.0f)
-                return;
-
-            *repeat = 1;
-            *repeat_time = interval;
-            ++*repeat_count;
+            if (*repeat_time <= 0.0f) {
+                *repeat = 1;
+                *repeat_time = interval;
+                ++*repeat_count;
+            }
         }
     }
 
