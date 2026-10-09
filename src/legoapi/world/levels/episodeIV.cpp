@@ -313,7 +313,7 @@ void TatooineD_Init(WORLDINFO_s *world) {
     if (direction)
         LevPathCnxDir |= 1;
 
-    LevPathCnx[1] = AIPAthFindPathCnx(world->ai_sys, NULL, "box1_c", "box1_b", &direction);
+    LevPathCnx[1] = AIPAthFindPathCnx(world->ai_sys, NULL, "box1_a", "box1_b", &direction);
     if (direction)
         LevPathCnxDir |= 2;
 }
@@ -381,10 +381,10 @@ void TatooineA_Update(WORLDINFO_s *world) {
 }
 
 void TatooineD_Update(WORLDINFO_s *world) {
-    AIPATHNODE_s *node = static_cast<AIPATHNODE_s *>(LevAIPathNode[0]);
-    if (node != NULL && NuSpecialExistsFn(&LevHSpecial[0])) {
+    if (LevAIPathNode[0] != NULL && NuSpecialExistsFn(&LevHSpecial[0])) {
         NUVEC *position = NuSpecialGetDrawPos(&LevHSpecial[0]);
         if (position != NULL) {
+            AIPATHNODE_s *node = static_cast<AIPATHNODE_s *>(LevAIPathNode[0]);
             node->position.x = position->x - 0.75f;
             node->position.z = position->z;
             if (world->ai_sys->path_sys != NULL && world->ai_sys->path_sys->active_path != NULL)
@@ -393,13 +393,15 @@ void TatooineD_Update(WORLDINFO_s *world) {
     }
 
     AIPATHCNX_s *first = static_cast<AIPATHCNX_s *>(LevPathCnx[0]);
-    AIPATHCNX_s *second = static_cast<AIPATHCNX_s *>(LevPathCnx[1]);
-    if (first != NULL && second != NULL) {
-        i32 direction = LevPathCnxDir;
-        if (second->traversal_flags[(direction >> 1) & 1] & 0x08000000)
-            first->traversal_flags[direction & 1] |= 0x80000000;
+    if (first != NULL && LevPathCnx[1] != NULL) {
+        AIPATHCNX_s *second = static_cast<AIPATHCNX_s *>(LevPathCnx[1]);
+        u32 direction = LevPathCnxDir;
+        u32 own = direction & 1;
+        u32 other = (direction >> 1) & 1;
+        if (second->traversal_flags[other] & 0x08000000)
+            first->traversal_flags[own] |= 0x80000000;
         else
-            first->traversal_flags[direction & 1] &= ~0x80000000;
+            first->traversal_flags[own] &= ~0x80000000;
     }
 }
 

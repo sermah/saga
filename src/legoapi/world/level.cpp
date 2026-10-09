@@ -388,27 +388,22 @@ static void Titles_Draw(WORLDINFO *) {
 }
 
 i32 Text_StripComments(char *text, char *dest, i32 param) {
-    char *start = text;
     char *end = text + NuStrLen(text);
     char *out = dest;
     while (text <= end) {
         char c = *text;
-        if (c == '#' || c == ';' || (c == '/' && text[1] == '/')) {
-            if (c == '/') {
-                text++;
-            }
-            while (c != '\r' && c != '\n' && c != '\0') {
+        // A lone '/' is consumed along with its look-ahead: the condition advances text before the comparison.
+        if (c == ';' || c == '#' || (c == '/' && (c = *++text) == '/')) {
+            c = *++text;
+            while (c != '\r' && c != '\0' && c != '\n') {
                 c = *++text;
             }
-            *out++ = c;
-            text++;
-        } else {
-            if (param != 0 && (c == ',' || c == '=')) {
-                c = ' ';
-            }
-            *out++ = c;
-            text++;
         }
+        if (param != 0 && (c == '=' || c == ',')) {
+            c = ' ';
+        }
+        *out++ = c;
+        text++;
     }
     *out = '\0';
     return (i32)(out - dest);

@@ -199,9 +199,10 @@ void CruiserCPanel(WORLDINFO_s *) {
 }
 
 void CruiserDInit(WORLDINFO_s *world) {
-    if (world->area->level_count != 0) {
-        for (i32 i = 0; i < world->area->level_count; i++) {
-            if (static_cast<u16>(world->area->levels[i]) == static_cast<u16>(CRUISERE_LDATA->idx))
+    i32 level_count = world->area->level_count;
+    if (level_count != 0) {
+        for (i32 i = 0; i < level_count; i++) {
+            if (static_cast<u16>(CRUISERE_LDATA->idx) == static_cast<u16>(world->area->levels[i]))
                 CruiserE_ix = i;
         }
     }

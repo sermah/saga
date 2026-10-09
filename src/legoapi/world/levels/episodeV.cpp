@@ -1729,10 +1729,10 @@ void AsteroidChaseD_Update(WORLDINFO_s *) {
     if (turretAliveCount == 0 && netclient == 0) {
         LevTime[0] += FRAMETIME;
         if (melee_waveDelay <= 0.0f && LevTime[0] >= 12.0f) {
-            if (FreePlay != 0) {
-                GoToNewLevel(ASTEROIDCHASEA_LDATA->idx);
-            } else {
+            if (FreePlay == 0) {
                 GoToNewLevel(ASTEROIDCHASEMITRO_LDATA->idx);
+            } else {
+                GoToNewLevel(ASTEROIDCHASEA_LDATA->idx);
             }
         }
     }
