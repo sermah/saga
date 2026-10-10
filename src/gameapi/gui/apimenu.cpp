@@ -933,17 +933,24 @@ static void MenuRefreshPauseCutTarget() {
 
 static __used__ void MenuDrawPauseCut(MENU *menu) {
     GameDrawMenuEntry(menu, TTab[tRESUME]);
+    i32 alpha = MenuA;
     const bool can_skip =
         CutScenePlayer_Active() != 0 || pausecut_skip_to_level != -1 || pausecut_skip_to_gameplay != 0;
-    DrawMenuEntryEx(menu, TTab[tSKIP], can_skip ? MenuA : MenuA / 2);
+    if (!can_skip) {
+        alpha /= 2;
+    }
+    DrawMenuEntryEx(menu, TTab[tSKIP], static_cast<u8>(alpha));
+    dme_r = 0;
+    dme_g = 0xff;
+    dme_b = 0x3f;
 }
 static __used__ void MenuDrawHowToPlay(MENU *menu) {
-    char text[128];
+    char text[64];
     menu->draw_y = 0.5f;
 
     NuStrCpy(text, TTab[tMUSIC]);
     NuStrCat(text, ": ");
-    NuStrCat(text, TTab[SuperOptions.music_enabled != 0 ? tON : tOFF]);
+    NuStrCat(text, SuperOptions.music_enabled != 0 ? TTab[tON] : TTab[tOFF]);
     GameDrawMenuEntry(menu, text);
 
     NuStrCpy(text, TTab[tHOWTOPLAY]);
@@ -951,7 +958,11 @@ static __used__ void MenuDrawHowToPlay(MENU *menu) {
     if (TestForController() != 0 && TTab[tCONTROLLER] != NULL) {
         NuStrCat(text, TTab[tCONTROLLER]);
     } else {
-        NuStrCat(text, TTab[MechInputTouchSystem::s_baseControlMode == 0 ? tCONSOLE : tTOUCH]);
+        if (MechInputTouchSystem::s_baseControlMode != 0) {
+            NuStrCat(text, TTab[tTOUCH]);
+        } else {
+            NuStrCat(text, TTab[tCONSOLE]);
+        }
     }
     NuStrCat(text, ")");
     GameDrawMenuEntry(menu, text);
@@ -991,9 +1002,9 @@ static __used__ void MenuDrawPauseExit(MENU *menu) {
         if (warning != NULL) {
             const u16 angle = static_cast<u16>(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0f);
             const f32 blend = NuTrigTable[angle >> 1] * 0.5f + 0.5f;
-            const u8 r = static_cast<u8>(MENULOSTR1 + (MENULOSTR2 - MENULOSTR1) * blend);
-            const u8 g = static_cast<u8>(MENULOSTG1 + (MENULOSTG2 - MENULOSTG1) * blend);
-            const u8 b = static_cast<u8>(MENULOSTB1 + (MENULOSTB2 - MENULOSTB1) * blend);
+            const i32 r = static_cast<i32>(MENULOSTR1 + (MENULOSTR2 - MENULOSTR1) * blend);
+            const i32 g = static_cast<i32>(MENULOSTG1 + (MENULOSTG2 - MENULOSTG1) * blend);
+            const i32 b = static_cast<i32>(MENULOSTB1 + (MENULOSTB2 - MENULOSTB1) * blend);
             const i32 a = static_cast<i32>(static_cast<i32>(MENULOSTA1 + (MENULOSTA2 - MENULOSTA1) * blend) *
                                            (static_cast<f32>(MenuA) * 0.0078125f));
             SmartTextEx(warning, PauseMenus_X,
@@ -1018,12 +1029,12 @@ static __used__ void MenuDrawPauseMain(MENU *menu) {
     dme_b = 0x3f;
 
     if (TestForController() != 0) {
-        DrawMenuEntryEx(menu, TTab[tCONTROLLERCONNECTED], MenuA / 2);
+        DrawMenuEntryEx(menu, TTab[tCONTROLLERCONNECTED], static_cast<u8>(MenuA / 2));
     } else {
         char controls[64];
         NuStrCpy(controls, TTab[tCONTROLS]);
         NuStrCat(controls, ": ");
-        char *control_name = TTab[MechInputTouchSystem::s_baseControlMode == 0 ? tCONSOLE : tTOUCH];
+        char *control_name = MechInputTouchSystem::s_baseControlMode != 0 ? TTab[tTOUCH] : TTab[tCONSOLE];
         NuStrCat(controls, control_name != NULL ? control_name : "?");
         GameDrawMenuEntry(menu, controls);
     }
@@ -1031,7 +1042,7 @@ static __used__ void MenuDrawPauseMain(MENU *menu) {
     GameDrawMenuEntry(menu, TTab[tHELPANDOPTIONS]);
 
     if (SuperStory != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL) {
-        DrawMenuEntryEx(menu, TTab[tEXTRAS], static_cast<i32>(MenuA * 0.5f));
+        DrawMenuEntryEx(menu, TTab[tEXTRAS], static_cast<u8>(static_cast<i32>(MenuA * 0.5f)));
     } else {
         GameDrawMenuEntry(menu, TTab[tEXTRAS]);
     }
@@ -1039,13 +1050,15 @@ static __used__ void MenuDrawPauseMain(MENU *menu) {
         GameDrawMenuEntry(menu, TTab[tDROPOUT]);
     }
 
+    char *exit_text;
     if (WORLD->current_level == HUB_LDATA) {
-        GameDrawMenuEntry(menu, TTab[tQUIT]);
+        exit_text = TTab[tQUIT];
     } else if (GAMEDEMO != 0) {
-        GameDrawMenuEntry(menu, TTab[tRESTARTDEMO]);
+        exit_text = TTab[tRESTARTDEMO];
     } else {
-        GameDrawMenuEntry(menu, TTab[tMAP]);
+        exit_text = TTab[tMAP];
     }
+    GameDrawMenuEntry(menu, exit_text);
 }
 static __used__ void MenuExitHowToPlay(MENU *) {
     GameAudio_PlaySfx(0x31, NULL, 0, 0);
