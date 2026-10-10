@@ -1330,7 +1330,6 @@ i32 create_qfont3dz = 0;
 // Cutscene & system misc
 // ------------------------------------------------------------------------
 i32 BeenAttacked = 0;
-FadeSystem FadeSys;
 i32 Paused = 0;
 f32 PauseMenus_X;
 i32 PauseMenus_Align;

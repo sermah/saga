@@ -27,6 +27,14 @@ struct nunativegscene_s;
 struct SHOPINPUT;
 
 i32 only_process_this_hint_id = -1;
+
+// The original hint translation unit owns these transitions and the dynamically
+// initialised touch-UI hint icon X position.
+HintVectorTransition hintIconPos;
+HintScalarTransition hintIconScale;
+HintScalarTransition hintYPop;
+extern f32 ICONX;
+f32 ICONXPOS_TOUCHYFEELY = -ICONX;
 static __used__ i32 Attack_UpdateHint(HINT_s *) {
     if (player == NULL || player->field_0x7a5 != 0xff || VehicleArea != 0)
         return 0;

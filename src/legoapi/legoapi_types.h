@@ -4034,6 +4034,8 @@ struct FadeStillWipe : FadeBase {
     void UpdateFade();
 };
 struct FadeSystem : FADEINFO_s {
+    ~FadeSystem() {
+    }
     i32 AddFade(FadeBase *);
     void Draw();
     void Init();

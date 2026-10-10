@@ -106,7 +106,13 @@ extern f32 hackFlashTimer;
 extern GAMEANIMSET_s *hackFlashingGameAnimSet;
 extern nuhspecial_s *hackFlashingSpecial;
 
-extern FadeSystem FadeSys;
+// The fade system and the four fade effect objects handed to FadeSystem::AddFade()
+// during LoadPermData are constructed by the original screen translation unit.
+FadeSystem FadeSys;
+Fade fade;
+FadeWipe fadeWipe;
+FadeStillWipe fadeStillWipe;
+FadeStill fadeStill;
 extern i32 Paused;
 extern volatile i32 waiting_for_level;
 extern i32 GAMEDEMO;
