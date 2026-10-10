@@ -20,6 +20,7 @@ ALLOWED_OPTIONS = {
     "-fPIE",
     "-fno-ipa-sra",
     "-fomit-frame-pointer",
+    "-ftree-vectorize",
 }
 
 
