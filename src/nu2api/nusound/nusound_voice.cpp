@@ -566,8 +566,8 @@ void NuSoundVoice::UpdateHardwareVoice(f32) {
 
 bool NuSoundVoice::AddEffect(NuSoundEffect *effect) {
     if (effects.Length() != 0) {
-        NuListNodeBase *node = effects.Head();
         NuListNodeBase *last = effects.Tail()->GetPrev();
+        NuListNodeBase *node = effects.Head();
         if (static_cast<NuListNode<NuSoundEffect *> *>(node)->value == effect) {
             return false;
         }

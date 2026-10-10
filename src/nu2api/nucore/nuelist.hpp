@@ -43,7 +43,7 @@ template <typename T, typename D = DefaultElist> class NuEList {
     ~NuEList() {
         while (length != 0) {
             T *entry = Front();
-            Remove(entry);
+            Unlink(entry);
             delete entry;
         }
     }
@@ -68,7 +68,8 @@ template <typename T, typename D = DefaultElist> class NuEList {
         return true;
     }
 
-    void Remove(T *entry) {
+    // Removal as compiled into the destructor's drain loop.
+    void Unlink(T *entry) {
         Links *entry_links = GetLinks(entry);
         T *previous = entry_links->prev;
         T *next = entry_links->next;
@@ -83,6 +84,24 @@ template <typename T, typename D = DefaultElist> class NuEList {
             entry_links->next = nullptr;
             entry_links->prev = nullptr;
         }
+    }
+
+    void Remove(T *entry) {
+        Links *entry_links = GetLinks(entry);
+        T *next = entry_links->next;
+        T *previous = entry_links->prev;
+        if (previous == nullptr && next == nullptr) {
+            return;
+        }
+        length--;
+        if (previous != nullptr) {
+            GetLinks(previous)->next = next;
+        }
+        if (next != nullptr) {
+            GetLinks(next)->prev = previous;
+        }
+        entry_links->next = nullptr;
+        entry_links->prev = nullptr;
     }
 };
 
