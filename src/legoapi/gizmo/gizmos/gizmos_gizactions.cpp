@@ -90,7 +90,10 @@ i32 Action_UsePanel(AISYS_s *system, AISCRIPTPROCESS_s *processor, AIPACKET_s *p
             object->pad_gamepad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
         }
     }
-    return object->field_0x7a5 == 0x0b && object->field_0x788 == panel;
+    if (object->field_0x7a5 == 0x0b && object->field_0x788 == panel) {
+        return 1;
+    }
+    return 0;
 }
 
 i32 Action_CameraCut(AISYS_s *system, AISCRIPTPROCESS_s *processor, AIPACKET_s *packet, char **params, i32 param_count,
@@ -283,7 +286,10 @@ i32 Action_PullLever(AISYS_s *system, AISCRIPTPROCESS_s *processor, AIPACKET_s *
             object->pad_gamepad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
         }
     }
-    return object->field_0x7a5 == 0x4a && object->field_0x788 == lever;
+    if (object->field_0x7a5 == 0x4a && object->field_0x788 == lever) {
+        return 1;
+    }
+    return 0;
 }
 
 i32 Action_UseTechno(AISYS_s *system, AISCRIPTPROCESS_s *processor, AIPACKET_s *packet, char **params, i32 param_count,

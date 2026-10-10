@@ -457,7 +457,7 @@ i32 NetChangedReplicator::AllowPush(EdClass const *object_class, void const *obj
 void NetChangedReplicator::CheckSum(unsigned char const *bytes, u32 size, u32 &checksum) const {
     u32 value = checksum;
     for (u32 i = 0; i < size; i++) {
-        value = static_cast<i32>(mCrc32Table[static_cast<u8>(value ^ bytes[i])]) ^ (value >> 8);
+        value = (value >> 8) ^ static_cast<i32>(mCrc32Table[static_cast<u8>(value ^ bytes[i])]);
         checksum = value;
     }
     checksum = ~value;

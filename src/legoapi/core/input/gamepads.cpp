@@ -113,9 +113,10 @@ i32 GamePad_Waggle(GAMEPAD_s *pad) {
 
 GAMEPAD_s *GamePad_Allocate() {
     for (i32 i = 0; i < 64; i++) {
-        if ((GamePad[i].allocated_5a & 1) == 0) {
-            GamePad[i].allocated_5a |= 1;
-            return &GamePad[i];
+        GAMEPAD_s *pad = &GamePad[i];
+        if ((pad->allocated_5a & 1) == 0) {
+            pad->allocated_5a |= 1;
+            return pad;
         }
     }
     return NULL;

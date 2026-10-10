@@ -700,9 +700,7 @@ GizPanelObjectInterface::~GizPanelObjectInterface() {
 
 void TeleportObjectInterface::GetPos(VuVec &position, i32 direction) const {
     NUVEC *point;
-    if (direction != -1) {
-        point = teleport.path->pts;
-    } else if (index > 0 && (teleport.flags & 1) == 0) {
+    if (direction == -1 && index > 0 && (teleport.flags & 1) == 0) {
         point = &teleport.path->pts[teleport.path->length - 1];
     } else {
         point = teleport.path->pts;
@@ -943,12 +941,11 @@ i32 GizmoGetGuid(GIZMOSYS_s *, GIZMO_s *) {
 }
 
 char *GizmoGetName(GIZMO *gizmo) {
-    GIZMOTYPES *types = gizmotypes;
-    if (types == NULL || gizmo == NULL || gizmo->type_id >= types->count) {
+    if (gizmotypes == NULL || gizmo == NULL || gizmo->type_id >= gizmotypes->count) {
         return NULL;
     }
 
-    GIZMOGETGIZMONAMEFN get_name = types->types[gizmo->type_id].fns.get_gizmo_name_fn;
+    GIZMOGETGIZMONAMEFN get_name = gizmotypes->types[gizmo->type_id].fns.get_gizmo_name_fn;
     if (get_name == NULL) {
         return NULL;
     }
@@ -1252,8 +1249,8 @@ i32 GizmoIsNameUnique(GIZMOSYS *gizmo_sys, char *name) {
         return 1;
     }
 
-    GIZMOSET *set = gizmo_sys->sets;
     GIZMOTYPE *type = gizmotypes->types;
+    GIZMOSET *set = gizmo_sys->sets;
     for (i32 type_index = 0; type_index < gizmotypes->count; ++type_index, ++type, ++set) {
         if (type->fns.get_gizmo_name_fn == NULL) {
             continue;

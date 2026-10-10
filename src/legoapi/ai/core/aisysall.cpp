@@ -424,7 +424,7 @@ extern "C" void AISysFindRoute(AIPACKET *packet) {
         return;
     }
 
-    const u16 valid_routes = packet->available_routes & packet->path_info.connection->route_mask;
+    const u16 valid_routes = packet->path_info.connection->route_mask & packet->available_routes;
     if (valid_routes == 0) {
         return;
     }
